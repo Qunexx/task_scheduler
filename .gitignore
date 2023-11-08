@@ -223,7 +223,8 @@ AppPackages/
 
 #Custom ignoring
 /ProjectScheduler/ProjectScheduler.Api/appsettings.Development.json
-compose.yaml
+/compose.yaml
+/compose.yaml.bak
 /ProjectSchedulerAuth/ProjectSchedulerAuth.Api/appsettings.Development.json
 /Databases
 
