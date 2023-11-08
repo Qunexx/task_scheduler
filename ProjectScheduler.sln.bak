@@ -3,25 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectScheduler.Api", "ProjectScheduler\ProjectScheduler.Api\ProjectScheduler.Api.csproj", "{9508CC50-397D-460E-9D8E-06A891346110}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectScheduler.Api", "ProjectScheduler\ProjectScheduler.Api.csproj", "{9508CC50-397D-460E-9D8E-06A891346110}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectScheduler.Domain", "ProjectScheduler\ProjectScheduler.Domain\ProjectScheduler.Domain.csproj", "{F67871B7-4024-4FCC-B36B-6C88476600B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectScheduler.Domain", "Domain\ProjectScheduler.Domain.csproj", "{F67871B7-4024-4FCC-B36B-6C88476600B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectScheduler.Infrastructure", "ProjectScheduler\ProjectScheduler.Infrastructure\ProjectScheduler.Infrastructure.csproj", "{87239697-FBCA-40C5-975F-F3D97435DECC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectScheduler.Infrastructure", "Infrastructure\ProjectScheduler.Infrastructure.csproj", "{87239697-FBCA-40C5-975F-F3D97435DECC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectScheduler.Application", "ProjectScheduler\ProjectScheduler.Application\ProjectScheduler.Application.csproj", "{58213842-D8A2-4ACF-83FF-9179DD992A0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectScheduler.Application", "ProjectSchedulerApplication\ProjectScheduler.Application.csproj", "{58213842-D8A2-4ACF-83FF-9179DD992A0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Api", "ProjectSchedulerAuth\ProjectSchedulerAuth.Api\ProjectSchedulerAuth.Api.csproj", "{D2665C2B-A644-4B0E-B5FC-CC0045E225D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Api", "ProjectSchedulerAuthApi\ProjectSchedulerAuth.Api.csproj", "{D2665C2B-A644-4B0E-B5FC-CC0045E225D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectScheduler", "ProjectScheduler", "{AB23EF6E-E90C-4524-A1F6-D92B722E2289}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectSchedulerAuth", "ProjectSchedulerAuth", "{831B9921-2D49-484D-800F-4FE1CDAAA47E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Application", "ProjectSchedulerAuth\ProjectSchedulerAuth.Application\ProjectSchedulerAuth.Application.csproj", "{B4A6054D-EFAE-44FD-B112-7036FEB6104A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Application", "ProjectSchedulerAuth.Application\ProjectSchedulerAuth.Application.csproj", "{B4A6054D-EFAE-44FD-B112-7036FEB6104A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Domain", "ProjectSchedulerAuth\ProjectSchedulerAuth.Domain\ProjectSchedulerAuth.Domain.csproj", "{EE469FA0-A37B-4D0B-9D1B-632083FC97E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Domain", "ProjectSchedulerAuth.Domain\ProjectSchedulerAuth.Domain.csproj", "{EE469FA0-A37B-4D0B-9D1B-632083FC97E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Infrastructure", "ProjectSchedulerAuth\ProjectSchedulerAuth.Infrastructure\ProjectSchedulerAuth.Infrastructure.csproj", "{00FC2BBC-3404-47CA-8170-A1721AF5EA30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSchedulerAuth.Infrastructure", "ProjectSchedulerAuth.Infrastructure\ProjectSchedulerAuth.Infrastructure.csproj", "{00FC2BBC-3404-47CA-8170-A1721AF5EA30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

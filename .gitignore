@@ -222,7 +222,10 @@ project.lock.json
 AppPackages/
 
 #Custom ignoring
-/ProjectScheduler/appsettings.Development.json
+/ProjectScheduler/ProjectScheduler.Api/appsettings.Development.json
+compose.yaml
+/ProjectSchedulerAuth/ProjectSchedulerAuth.Api/appsettings.Development.json
+/Databases
 
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
