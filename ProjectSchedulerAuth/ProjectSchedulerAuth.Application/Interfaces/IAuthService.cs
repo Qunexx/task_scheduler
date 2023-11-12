@@ -5,6 +5,7 @@ namespace ProjectSchedulerAuth.Application.Interfaces
 {
     public interface IAuthService
     {
-        public User FilledUserByHashPassword(UserDto request);
+        public Task<User> CreateUser(UserDto request);
+        public string LoginizeUser(UserDto request);
     }
 }

@@ -15,9 +15,15 @@ namespace ProjectSchedulerAuth.Infrastructure.DbTools
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum<UserRolesEnum>();
+
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.UserRoles)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserSpecialName)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
-        public DbSet<UserRoles> UserRoles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
     }
 }

@@ -17,12 +17,35 @@ namespace ProjectSchedulerAuthApi
             _authService = authService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        /// <summary>
+        /// Регистрация
+        /// </summary>
+        /// <param name="request">ДТО пользователя</param>
+        /// <returns></returns>
+        [HttpPost("[action]")]
+        public async Task<ActionResult<User>> Register([FromBody] UserDto request)
         {
             try
             {
-                return Ok(_authService.FilledUserByHashPassword(request));
+                return Ok(await _authService.CreateUser(request));
+            }
+            catch (RegistrationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Логинизация с возвращением токена
+        /// </summary>
+        /// <param name="request">ДТО пользователя</param>
+        /// <returns></returns> 
+        [HttpPost("[action]")]
+        public async Task<ActionResult<User>> Login([FromBody] UserDto request)
+        {
+            try
+            {
+                return Ok(_authService.LoginizeUser(request));
             }
             catch (RegistrationException ex)
             {

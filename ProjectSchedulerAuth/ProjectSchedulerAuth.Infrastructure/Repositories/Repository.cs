@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace ProjectSchedulerAuth.Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T, TKey> : IRepository<T, TKey> where T : class, IEntityBase<TKey>
     {
         private readonly DbFactory _dbFactory;
         private DbSet<T> _dbSet;
@@ -23,22 +23,12 @@ namespace ProjectSchedulerAuth.Infrastructure.Repositories
 
         public void Add(T entity)
         {
-            if (typeof(IAuditEntity).IsAssignableFrom(typeof(T)))
-            {
-                ((IAuditEntity)entity).CreatedDate = DateTime.UtcNow;
-            }
             DbSet.Add(entity);
         }
 
         public void Delete(T entity)
         {
-            if (typeof(IDeleteEntity).IsAssignableFrom(typeof(T)))
-            {
-                ((IDeleteEntity)entity).IsDeleted = true;
-                DbSet.Update(entity);
-            }
-            else
-                DbSet.Remove(entity);
+            DbSet.Remove(entity);
         }
 
         public IQueryable<T> List(Expression<Func<T, bool>> expression)
@@ -46,13 +36,28 @@ namespace ProjectSchedulerAuth.Infrastructure.Repositories
             return DbSet.Where(expression);
         }
 
+        public T GetByKey(TKey primaryKey)
+        {
+            return DbSet.SingleOrDefault(x => x.Id.Equals(primaryKey))!;
+        }
+
+        public T GetByKeyWithInclude(Func<T, bool> predicate,
+            params Expression<Func<T, object>>[] includeProperties)
+        {
+            var query = Include(includeProperties);
+            return query.SingleOrDefault(predicate);
+        }
+
         public void Update(T entity)
         {
-            if (typeof(IAuditEntity).IsAssignableFrom(typeof(T)))
-            {
-                ((IAuditEntity)entity).UpdatedDate = DateTime.UtcNow;
-            }
             DbSet.Update(entity);
+        }
+
+        private IQueryable<T> Include(params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = DbSet.AsNoTracking();
+            return includeProperties
+                .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
         }
     }
 }
