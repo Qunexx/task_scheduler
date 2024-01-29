@@ -11,18 +11,23 @@ namespace Task_scheduler
 
     class Program
     {
-        static ITelegramBotClient bot = new TelegramBotClient("Сюдапихатьтокен");
-        static String connectionString = "Host=localhost;Port=5432;Username=postgres;Password=admin;Database=Dbname";
+        // static ITelegramBotClient bot = new TelegramBotClient("Сюдапихатьтокен");
+        // static String connectionString = "Host=localhost;Port=5432;Username=postgres;Password=admin;Database=Dbname";
+        static ITelegramBotClient bot = new TelegramBotClient("6869353524:AAFSvIpqjssKPkiYmqGCrlDoC0UHW89k1zU");
+        static String connectionString = "Host=localhost;Port=5432;Username=postgres;Password=admin;Database=task_scheduler";
 
         enum UserState
         {
             None,
             AwaitingTaskDescription,
-            AwaitingTasks,
-            AwaitingTaskChoising
+            AwaitingTaskDelete,
+            AwaitingTaskIdForUpdate,
+            AwaitingTaskUpdate
         }
 
         static Dictionary<long, UserState> userStates = new Dictionary<long, UserState>(); //хранение всех состояний пользователя
+        static Dictionary<int, int> userTaskIds = new Dictionary<int, int>();  //промежуточное хранение выбора пользователя для смены состояния апдейта
+        
        
         public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
@@ -70,12 +75,14 @@ namespace Task_scheduler
                     // }
 
                     int userId = (int)message.From.Id;
+                    // 
+
     
                     // Установка начального состояния пользователя, если оно не определено
                     if (!userStates.TryGetValue(userId, out UserState currentState))
                     {
                         currentState = UserState.None;
-                        userStates[userId] = currentState; // Добавление нового пользователя в словарь
+                        userStates[userId] = currentState; 
                     }
 
                     string? username;
@@ -88,7 +95,7 @@ namespace Task_scheduler
                                 username = update.Message.From.Username;
                                 await botClient.SendTextMessageAsync(message.Chat, "Привет, " + username + "! Я Task Scheduler бот, вот список моих команд:");
                                 Console.WriteLine($"Текущее состояние: {currentState}");
-                                await botClient.SendTextMessageAsync(chatId, "Список команд: \n1./addtask \n2./showtasks .....");
+                                await botClient.SendTextMessageAsync(chatId, "Список команд: \n1./addtask \n2./showtasks \n3./deletetask \n4./updatetask\n.....");
                                 userId = (int)message.From.Id;
                                 userStates[userId] = UserState.None;
                             }
@@ -109,12 +116,24 @@ namespace Task_scheduler
                             }
                             if(message.Text.ToLower() == "/deletetask")
                             {
-                                Console.WriteLine($"Текущее состояние: {currentState}");
                                 userId = (int)message.From.Id;
+                                Console.WriteLine($"Текущее состояние: {currentState}");
                                 await GetTasks(userId);
                                 await DisplayTasks(botClient,chatId,userId);
-                                await botClient.SendTextMessageAsync(chatId, "Выберите id задачи:");
-                                userStates[userId] = UserState.AwaitingTaskChoising;
+                                await botClient.SendTextMessageAsync(chatId, "Выберите id задачи для удаления:");
+                                userStates[userId] = UserState.AwaitingTaskDelete;
+                                
+                            }
+
+                            if (message.Text.ToLower() == "/updatetask")
+                            {
+                                userId = (int)message.From.Id;
+                                Console.WriteLine($"Текущее состояние: {currentState}");
+                                await GetTasks(userId);
+                                await DisplayTasks(botClient,chatId,userId);
+                                await botClient.SendTextMessageAsync(chatId, "Выберите id задачи для обновления:");
+                                userStates[userId] = UserState.AwaitingTaskIdForUpdate;
+                                
                             }
                             
                             break;
@@ -134,17 +153,68 @@ namespace Task_scheduler
                             userStates[userId] = UserState.None;
                             break;
                         
-                        case UserState.AwaitingTaskChoising:
+                        case UserState.AwaitingTaskDelete:
                             
                             userId = (int)message.From.Id;
                             Console.WriteLine($"Текущее состояние: {currentState}");
-                            var choice = message.Text;
-                            await DeleteTask(choice);
-                            await botClient.SendTextMessageAsync(chatId, "Задача удалена!");
-                            
+                            int choice = Convert.ToInt32(message.Text);
+
+                            if (await IsUsersTask(choice, userId))
+                            {
+                                await DeleteTask(choice);
+                                await botClient.SendTextMessageAsync(chatId, "Задача удалена!");
+                                userStates[userId] = UserState.None;
+                                break;
+                            }
+                            else
+                            {
+                                await botClient.SendTextMessageAsync(chatId, "У вас нет прав на удаление этой задачи, вы можете удалить только одну из представленных выше.");
+                                break;
+                            }
+
+                        case UserState.AwaitingTaskIdForUpdate:
+                            userId = (int)message.From.Id;
+                            Console.WriteLine($"Текущее состояние: {currentState}");
+                            int taskid = Convert.ToInt32(message.Text); 
+
+                            if (await IsUsersTask(taskid, userId))
+                            {
+                                userTaskIds[userId] = taskid; // Сохраненяем taskid для конкретного userid
+                                await botClient.SendTextMessageAsync(chatId, "Введите новое описание задачи:");
+                                userStates[userId] = UserState.AwaitingTaskUpdate;
+                            }
+                            else
+                            {
+                                await botClient.SendTextMessageAsync(chatId, "У вас нет прав на изменение этой задачи.");
+                                break;
+                            }
                             break;
-                        
+
                             
+
+                        case UserState.AwaitingTaskUpdate:
+                            userId = (int)message.From.Id;
+                            Console.WriteLine($"Текущее состояние: {currentState}");
+                            Console.WriteLine($"Полученный userId: {userId}");
+
+                            string newDescription = message.Text;
+
+                            if (userTaskIds.TryGetValue(userId, out int taskId))
+                            {
+                               
+                                Console.WriteLine($"Найденный taskId: {taskId}");
+                                await UpdateTask(taskId, newDescription, userId);
+                                await botClient.SendTextMessageAsync(chatId, "Задача обновлена!");
+                            }
+                            else
+                            {
+                                await botClient.SendTextMessageAsync(chatId, "Произошла ошибка при обновлении задачи, попробуйте ещё");
+                            }
+
+                            userTaskIds.Remove(userId); // Очищаем userrTaskIds
+                            userStates[userId] = UserState.None;
+                            break;
+
                     }
                 
                     
@@ -269,21 +339,26 @@ namespace Task_scheduler
                             await botClient.SendTextMessageAsync(chatId, messageBuilder.ToString());
                         }
                         
-                        // async Task UpdateTask(int taskId, string newDescription)
-                        // {
-                        //     using (var connection = new NpgsqlConnection(connectionString))
-                        //     {
-                        //         await connection.OpenAsync();
-                        //         var cmd = new NpgsqlCommand("UPDATE tasks SET description = @description WHERE id = @id", connection);
-                        //         cmd.Parameters.AddWithValue("description", newDescription);
-                        //         cmd.Parameters.AddWithValue("id", taskId);
-                        //
-                        //         await cmd.ExecuteNonQueryAsync();
-                        //     }
-                        // }
-                        //
+                        async Task UpdateTask(int taskid, string description, int userid)
+                        {
+                            using (var connection = new NpgsqlConnection(connectionString))
+                            {
+                                await connection.OpenAsync();
+
+                                var cmd = new NpgsqlCommand("UPDATE tasks SET description = @description WHERE taskid = @taskid", connection);
+                                cmd.Parameters.AddWithValue("description", description);
+                                cmd.Parameters.AddWithValue("taskid", taskid);
+                                cmd.Parameters.AddWithValue("userId", userid);
+
+                                await cmd.ExecuteNonQueryAsync();
+                                
+                               
+                                
+                            }
+                        }
                         
-                        async Task DeleteTask(string taskid)
+                        
+                        async Task DeleteTask(int taskid)
                         {
                             using (var connection = new NpgsqlConnection(connectionString))
                             {
@@ -293,6 +368,22 @@ namespace Task_scheduler
 
                                 await cmd.ExecuteNonQueryAsync();
                             }
+                        }
+
+                        async Task<bool> IsUsersTask(int taskid,int userid)
+                        {
+                            using (var connection = new NpgsqlConnection(connectionString)) 
+                            {
+                                await connection.OpenAsync();
+
+                                var cmd = new NpgsqlCommand("SELECT COUNT(*) FROM tasks WHERE taskid = @taskid AND userid = @userid", connection);
+                                cmd.Parameters.AddWithValue("taskid", taskid);
+                                cmd.Parameters.AddWithValue("userid", userid);
+
+                                var count = (long)await cmd.ExecuteScalarAsync();
+                                return count > 0;
+                            }
+                            
                         }
 
                     
