@@ -42,39 +42,9 @@ namespace Task_scheduler
                     var message = update.Message; //Вся инфа о сообщении пользователя
                     var chat = message.Chat; // Вся инфа о чате
                     var chatId = message.Chat.Id; //чатId
-                    // if (message.Text.ToLower() == "/start") //Если старт, то пишем здрасьте
-                    // {
-                    //     await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать на борт, добрый путник!");
-                    //     
-                    //
-                    //     // инициализируем клаву
-                    //     var inlineKeyboard = new InlineKeyboardMarkup(
-                    //         new
-                    //             List<InlineKeyboardButton[]>() // список, cодержащщий массив кнопок
-                    //             {
-                    //                 // Каждый новый массив - это дополнительные строки,
-                    //                 // а каждая дополнительная строка (кнопка) в массиве - это добавление ряда
-                    //
-                    //                 new InlineKeyboardButton[] // тут создаем массив кнопок
-                    //                 {
-                    //                     InlineKeyboardButton.WithUrl("Это кнопка с сайтом", "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"),
-                    //                     InlineKeyboardButton.WithCallbackData("Команда 1", "button1"),
-                    //                 },
-                    //                 new InlineKeyboardButton[]
-                    //                 {
-                    //                     InlineKeyboardButton.WithCallbackData("Команда 2", "button2"),
-                    //                     InlineKeyboardButton.WithCallbackData("Команда 3", "button3"),
-                    //                 },
-                    //            });
-                    //
-                    //     await botClient.SendTextMessageAsync(
-                    //         chat.Id,
-                    //         "Это клавиатура команд!",
-                    //         replyMarkup: inlineKeyboard); // Все клавиатуры передаются в параметр replyMarkup
-                    // }
+                   
 
                     int userId = (int)message.From.Id;
-                    // 
 
     
                     // Установка начального состояния пользователя, если оно не определено
@@ -219,7 +189,7 @@ namespace Task_scheduler
                     
 
                     username = update.Message.From.Username;
-                    //await botClient.SendTextMessageAsync(message.Chat, "Сообщение получено " + username);
+                    
                     return;
             }
             
