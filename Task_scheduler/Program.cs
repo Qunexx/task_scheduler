@@ -11,10 +11,9 @@ namespace Task_scheduler
 
     class Program
     {
-        // static ITelegramBotClient bot = new TelegramBotClient("Сюдапихатьтокен");
-        // static String connectionString = "Host=localhost;Port=5432;Username=postgres;Password=admin;Database=Dbname";
-        static ITelegramBotClient bot = new TelegramBotClient("6869353524:AAFSvIpqjssKPkiYmqGCrlDoC0UHW89k1zU");
-        static String connectionString = "Host=localhost;Port=5432;Username=postgres;Password=admin;Database=task_scheduler";
+        
+        static ITelegramBotClient bot = new TelegramBotClient("Сюда токен пихать");
+        static String connectionString = "Host=хост;Port=порт;Username=юзернейм;Password=пароль;Database=Название бд";
 
         enum UserState
         {
